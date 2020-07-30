@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <PackageId>BusManager</PackageId>
+	  <Version>1.0.2</Version>
+	  <TargetFramework>netstandard2.0</TargetFramework>
+	  <PackageTags>BusManager;ManagerBus;</PackageTags>
+	  <Authors>KDEGitHub</Authors>
+	  <Company>KDEGitHub</Company>
+	  <Authors>KDEGitHub</Authors>
+	  <Company>KDEGitHub</Company>
+	  <Description>
+		  This client library for fork with bus data.
+		  Project is opensource.
+		  Repository https://github.com/KDEGitHub/BusManager
+	  </Description>
+	  <PackageProjectUrl>https://github.com/KDEGitHub/BusManager</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/KDEGitHub/BusManager</RepositoryUrl>
+	  <RepositoryType></RepositoryType>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.1.0" />
+  </ItemGroup>
+
+</Project>
