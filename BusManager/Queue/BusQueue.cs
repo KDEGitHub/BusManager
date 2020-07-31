@@ -77,13 +77,26 @@ namespace BusManager.Queue
         {
             try
             {
-                if (_receiver == null)
-                    _receiver = new BusReceiver(_connection, _logger, _config.Receiver);
+                if (_config.Receiver != null)
+                {
+                    if (_receiver == null)
+                        _receiver = new BusReceiver(_connection, _logger, _config.Receiver);
 
-                if (_producer == null)
-                    _producer = new BusProducer(_connection, _logger, _config.Producer);
+                    if (!_receiver.TryCreateChannel())
+                        return false;
+                }
 
-                return (_receiver.TryCreateChannel() && _producer.TryCreateChannel());
+                if (_config.Producer != null)
+                {
+                    if (_producer == null)
+                        _producer = new BusProducer(_connection, _logger, _config.Producer);
+
+                    if (!_producer.TryCreateChannel())
+                        return false;
+                }
+
+                return true;
+
 
             }
             catch (Exception e)
