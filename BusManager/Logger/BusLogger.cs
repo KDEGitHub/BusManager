@@ -3,6 +3,8 @@ using BusManager.Messages;
 using BusManager.Model;
 using RabbitMQ.Client;
 using System;
+using System.Net;
+using System.Net.Sockets;
 
 namespace BusManager.Logger
 {
@@ -11,6 +13,7 @@ namespace BusManager.Logger
         private readonly ILoggerConfiguration _settings;
         private IConnection _connection;
         private IModel _channel;
+        private readonly string _ipAddress;
         private bool IsConnected
         {
             get { return (_connection != null && _connection.IsOpen); }
@@ -23,6 +26,7 @@ namespace BusManager.Logger
         public BusLogger(ILoggerConfiguration settings)
         {
             _settings = settings;
+            _ipAddress = GetLocalIPAddress();
             TryConnect();
         }
 
@@ -30,6 +34,8 @@ namespace BusManager.Logger
         {
             if (TryConnect() && TryCreateChannel())
             {
+                message.Trace = $"[{_ipAddress}] {_settings.ApplicationName}.{message.Trace}";
+
                 IBusMessage request = new BusMessage
                 {
                     Id = Guid.NewGuid(),
@@ -113,6 +119,19 @@ namespace BusManager.Logger
             return channel;
         }
 
+        private string GetLocalIPAddress()
+        {
+
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            return null;
+        }
 
     }
 

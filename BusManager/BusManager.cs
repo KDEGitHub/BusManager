@@ -16,7 +16,7 @@ namespace BusManager
         private readonly IBusConfiguration _config;
         private readonly List<IBusQueue> _queueList = new List<IBusQueue>();
 
-        public BusManager(IBusConnection connection, IBusLogger logger, IBusConfiguration config)
+        public BusManager(IBusConnection connection, IBusConfiguration config, IBusLogger logger = null)
         {
             _config = config;
             _connection = connection;
@@ -32,7 +32,7 @@ namespace BusManager
             }
             catch (Exception e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",
@@ -50,11 +50,11 @@ namespace BusManager
 
                 if (_connection.TryConnect())
                     foreach (var serviceConfiguration in _config.Services)
-                        _queueList.Add(new BusQueue(_connection, _logger, serviceConfiguration));
+                        _queueList.Add(new BusQueue(_connection, serviceConfiguration, _logger));
             }
             catch (Exception e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",
@@ -76,7 +76,7 @@ namespace BusManager
             }
             catch (Exception e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",
@@ -95,7 +95,7 @@ namespace BusManager
                     IServiceConfiguration config = _config.Services.FirstOrDefault(x => x.ServiceName == serviceName);
                     if (config != null)
                     {
-                        queue = new BusQueue(_connection, _logger, config);
+                        queue = new BusQueue(_connection, config, _logger);
                         _queueList.Add(queue);
                     }
                     if (queue == null) return false;
@@ -104,7 +104,7 @@ namespace BusManager
             }
             catch (Exception e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",

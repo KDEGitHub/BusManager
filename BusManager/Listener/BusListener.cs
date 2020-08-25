@@ -18,7 +18,7 @@ namespace BusManager.Listener
         private readonly BlockingCollection<IBusMessage> _queueMessages = new BlockingCollection<IBusMessage>();
         private Guid _messageId;
         
-        public BusListener(EventingBasicConsumer consumer, IBusLogger logger)
+        public BusListener(EventingBasicConsumer consumer, IBusLogger logger = null)
         {
             _consumer = consumer;
             _logger = logger;
@@ -55,7 +55,7 @@ namespace BusManager.Listener
             }
             catch (JsonException e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",

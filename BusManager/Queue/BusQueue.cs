@@ -25,7 +25,7 @@ namespace BusManager.Queue
             get { return _config.ServiceName; }
         }
 
-        public BusQueue(IBusConnection connection, IBusLogger logger, IServiceConfiguration config)
+        public BusQueue(IBusConnection connection, IServiceConfiguration config, IBusLogger logger= null)
         {
             _connection = connection;
             _config = config;
@@ -56,7 +56,7 @@ namespace BusManager.Queue
             }
             catch (Exception e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",
@@ -80,7 +80,7 @@ namespace BusManager.Queue
                 if (_config.Receiver != null)
                 {
                     if (_receiver == null)
-                        _receiver = new BusReceiver(_connection, _logger, _config.Receiver);
+                        _receiver = new BusReceiver(_connection,_config.Receiver, _logger);
 
                     if (!_receiver.TryCreateChannel())
                         return false;
@@ -89,7 +89,7 @@ namespace BusManager.Queue
                 if (_config.Producer != null)
                 {
                     if (_producer == null)
-                        _producer = new BusProducer(_connection, _logger, _config.Producer);
+                        _producer = new BusProducer(_connection, _config.Producer, _logger);
 
                     if (!_producer.TryCreateChannel())
                         return false;
@@ -101,7 +101,7 @@ namespace BusManager.Queue
             }
             catch (Exception e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",

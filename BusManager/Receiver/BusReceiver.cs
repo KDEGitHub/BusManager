@@ -24,7 +24,7 @@ namespace BusManager.Receiver
             get { return (_channel != null && _channel.IsOpen && _connection.TryConnect()); }
         }
 
-        public BusReceiver(IBusConnection connection, IBusLogger logger, IQueueConfiguration config)
+        public BusReceiver(IBusConnection connection, IQueueConfiguration config, IBusLogger logger = null)
         {
             _connection = connection;
             _config = config;
@@ -63,7 +63,7 @@ namespace BusManager.Receiver
             }
             catch (Exception e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",
@@ -98,7 +98,7 @@ namespace BusManager.Receiver
             }
             catch (Exception e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",

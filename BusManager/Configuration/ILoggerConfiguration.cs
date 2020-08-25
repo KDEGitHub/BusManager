@@ -2,6 +2,7 @@
 {
     public interface ILoggerConfiguration
     {
+        string ApplicationName { get; set; }
         string UserName { get; set; }
         string Password { get; set; }
         string HostName { get; set; }

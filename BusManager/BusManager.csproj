@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <PackageId>BusManager</PackageId>
-	  <Version>1.0.4</Version>
+	  <Version>1.0.5</Version>
 	  <TargetFramework>netstandard2.0</TargetFramework>
 	  <PackageTags>BusManager;ManagerBus;</PackageTags>
 	  <Authors>KDEGitHub</Authors>

@@ -49,7 +49,7 @@ namespace BusManager.Connection
             }
             catch (Exception e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",

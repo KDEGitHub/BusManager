@@ -20,7 +20,7 @@ namespace BusManager.Producer
             get { return (_channel != null && _channel.IsOpen && _connection.TryConnect()); }
         }
 
-        public BusProducer(IBusConnection connection, IBusLogger logger, IQueueConfiguration config)
+        public BusProducer(IBusConnection connection, IQueueConfiguration config, IBusLogger logger = null)
         {
             _connection = connection;
             _logger = logger;
@@ -46,7 +46,7 @@ namespace BusManager.Producer
             }
             catch (Exception e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",
@@ -70,7 +70,7 @@ namespace BusManager.Producer
             }
             catch (Exception e)
             {
-                _logger.Push(new LoggerMessage()
+                _logger?.Push(new LoggerMessage()
                 {
                     Message = e.Message,
                     Type = "Error",
