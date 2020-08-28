@@ -13,6 +13,7 @@ namespace BusManager.Messages
         public string Details { get; set; }
         public DateTime CreateDate { get; set; }
         public int TTL { get; set; }
+        public Guid UserId { get; set; }
 
         public virtual T GetBody<T>()
         {

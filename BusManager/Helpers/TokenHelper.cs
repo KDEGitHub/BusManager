@@ -20,26 +20,29 @@ namespace BusManager.Helpers
         {
             return new CancellationTokenSource(ttl * 1000);
         }
-      
+
         /// <summary>
         /// получение токена отмены для сообщения из шины
         /// </summary>
-        /// <param name="created">время создания</param>
-        /// <param name="ttlSec">время жизни токена</param>
+        /// <param name="itemCreated">время создания токена</param>
+        /// <param name="ttlSec">время жизни токена (сек)</param>
+        /// <param name="now"></param>
         /// <returns></returns>
-        public static CancellationToken GetTokenFromBus(DateTime created, int ttlSec)
+        public static CancellationToken GetToken(DateTime itemCreated, int ttl, DateTime? now = null)
         {
-            var transTime = DateTime.UtcNow - created;
-            double ttlMils = ttlSec * 1000;
+            if (!now.HasValue) now = DateTime.UtcNow;
+            var transTime = (DateTime)now - itemCreated;
+            double ttlMils = ttl * 1000;
             ttlMils = ttlMils - transTime.TotalMilliseconds;
             ttlMils = Math.Round(ttlMils, 0, MidpointRounding.AwayFromZero);
             return new CancellationTokenSource((int)ttlMils).Token;
         }
 
-        public static CancellationTokenSource GetTokenSourceFromBus(DateTime created, int ttlSec)
+        public static CancellationTokenSource GetTokenSource(DateTime itemCreated, int ttl, DateTime? now = null)
         {
-            var transTime = DateTime.UtcNow - created;
-            double ttlMils = ttlSec * 1000;
+            if (!now.HasValue) now = DateTime.UtcNow;
+            var transTime = (DateTime)now - itemCreated;
+            double ttlMils = ttl * 1000;
             ttlMils = ttlMils - transTime.TotalMilliseconds;
             ttlMils = Math.Round(ttlMils, 0, MidpointRounding.AwayFromZero);
             return new CancellationTokenSource((int)ttlMils);

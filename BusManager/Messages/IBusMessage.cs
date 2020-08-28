@@ -43,6 +43,11 @@ namespace BusManager.Messages
         int TTL { get; set; }
 
         /// <summary>
+        ///  идентификатор пользователя 
+        /// </summary>
+        Guid UserId { get; set; }
+
+        /// <summary>
         /// олучить сконвертированное сообщение
         /// </summary>
         /// <returns> сообщение </returns>
