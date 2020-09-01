@@ -63,7 +63,7 @@ namespace BusManager.Queue
                     Trace = typeof(BusQueue).FullName
                 });
                 request.IsError = true;
-                request.Details = e.Message;
+                request.ErrorDetails = e.Message;
                 return request;
             }
         }

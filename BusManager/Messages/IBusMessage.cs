@@ -30,7 +30,7 @@ namespace BusManager.Messages
         /// <summary>
         /// Детализация ошибки 
         /// </summary>
-        string Details { get; set; }
+        string ErrorDetails { get; set; }
 
         /// <summary>
         /// Дата создания 

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Globalization;
 using System.Text;
 
 namespace BusManager.Messages
@@ -10,7 +11,7 @@ namespace BusManager.Messages
         public string MessageType { get; set; }
         public object Body { get; set; }
         public bool IsError { get; set; }
-        public string Details { get; set; }
+        public string ErrorDetails { get; set; }
         public DateTime CreateDate { get; set; }
         public int TTL { get; set; }
         public Guid UserId { get; set; }
@@ -29,6 +30,17 @@ namespace BusManager.Messages
                     case TypeCode.DateTime:
                     case TypeCode.Double:
                         result = (T)Convert.ChangeType(Body.ToString(), typeof(T));
+                        break;
+                    case TypeCode.Object:
+                        if (typeof(T) == typeof(Guid))
+                        {
+                            Guid current = Guid.Parse(Body.ToString());
+                            result = (T)Convert.ChangeType(current, typeof(T), CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            result = JsonConvert.DeserializeObject<T>(Body.ToString());
+                        }
                         break;
                     default:
                         result = JsonConvert.DeserializeObject<T>(Body.ToString());
