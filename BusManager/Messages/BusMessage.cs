@@ -29,6 +29,7 @@ namespace BusManager.Messages
                     case TypeCode.Int64:
                     case TypeCode.DateTime:
                     case TypeCode.Double:
+                    case TypeCode.String:
                         result = (T)Convert.ChangeType(Body.ToString(), typeof(T));
                         break;
                     case TypeCode.Object:
