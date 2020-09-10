@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace BusManager.Configuration
 {
-    public abstract class BusConfiguration : IBusConfiguration
+    public class BusConfiguration : IBusConfiguration
     {
         public string ApplicationName { get; set; }
         public string UserName { get; set; }
