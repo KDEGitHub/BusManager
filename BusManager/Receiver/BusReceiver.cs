@@ -15,7 +15,7 @@ namespace BusManager.Receiver
     {
         private readonly IQueueConfiguration _config;
         private readonly IBusConnection _connection;
-        private readonly ILogger<BusReceiver> _logger;
+        private readonly ILogger _logger;
         private IModel _channel;
         private EventingBasicConsumer _consumer;
         public bool IsOpenChanel
@@ -27,7 +27,7 @@ namespace BusManager.Receiver
         {
             _connection = connection;
             _config = config;
-            _logger = (ILogger<BusReceiver>)logger;
+            _logger = logger;
             TryCreateChannel();
         }
 

@@ -16,7 +16,7 @@ namespace BusManager.Queue
     {
         private readonly IBusConnection _connection;
         private readonly IServiceConfiguration _config;
-        private readonly ILogger<BusQueue> _logger;
+        private readonly ILogger _logger;
         private IBusReceiver _receiver;
         private IBusProducer _producer;
         public string ServiceName
@@ -28,7 +28,7 @@ namespace BusManager.Queue
         {
             _connection = connection;
             _config = config;
-            _logger = (ILogger<BusQueue>)logger;
+            _logger = logger;
             TryInit();
         }
 

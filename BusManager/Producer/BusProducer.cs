@@ -12,7 +12,7 @@ namespace BusManager.Producer
     {
         private readonly IQueueConfiguration _config;
         private readonly IBusConnection _connection;
-        private readonly ILogger<BusProducer> _logger;
+        private readonly ILogger _logger;
         private IModel _channel;
         
         public bool IsOpenChanel
@@ -23,7 +23,7 @@ namespace BusManager.Producer
         public BusProducer(IBusConnection connection, IQueueConfiguration config, ILogger logger = null)
         {
             _connection = connection;
-            _logger = (ILogger<BusProducer>)logger;
+            _logger = logger;
             _config = config;
             TryCreateChannel();
         }

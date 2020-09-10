@@ -13,7 +13,7 @@ namespace BusManager.Listener
     public class BusListener : IBusListener
     {
        
-        private readonly ILogger<BusListener> _logger;
+        private readonly ILogger _logger;
         public readonly EventingBasicConsumer _consumer;
         private readonly BlockingCollection<IBusMessage> _queueMessages = new BlockingCollection<IBusMessage>();
         private Guid _messageId;
@@ -23,7 +23,7 @@ namespace BusManager.Listener
         public BusListener(EventingBasicConsumer consumer, ILogger logger = null, string serverInfo = "")
         {
             _consumer = consumer;
-            _logger = (ILogger<BusListener>)logger;
+            _logger = logger;
             _serverInfo = serverInfo;
         }
         public void Subscribe(MessageReceived sb)
