@@ -13,7 +13,7 @@ namespace BusManager.Helpers
     /// </summary>
     public static class ResponseHelper
     {
-        public static IBusMessage TryExecuteOperationWrapper<T>(IBusMessage item, Func<T, object> operation)
+        public static IBusMessage TryExecuteOperationWrapper<T>(IBusMessage item, Func<T, object> operation, ILogger logger = null)
         {
             IBusMessage message = new ResponseMessage(item.Id, item.MessageType);
             try
@@ -25,10 +25,11 @@ namespace BusManager.Helpers
             {
                 message.IsError = true;
                 message.ErrorDetails = $"Error : {ex.Message}";
+                logger.LogError(ex, $"Error : {ex.Message}");
             }
             return message;
         }
-        public static async Task<IBusMessage> TryExecuteOperationWrapperAsync<T>(IBusMessage item, Func<T, CancellationToken, Task<object>> operation)
+        public static async Task<IBusMessage> TryExecuteOperationWrapperAsync<T>(IBusMessage item, Func<T, CancellationToken, Task<object>> operation, ILogger logger= null)
         {
             IBusMessage message = new ResponseMessage(item.Id, item.MessageType);
             try
@@ -43,7 +44,7 @@ namespace BusManager.Helpers
             {
                 message.IsError = true;
                 message.ErrorDetails = $"Error : {ex.Message}";
-            
+                logger.LogError(ex, $"Error : {ex.Message}");
             }
             return message;
 
