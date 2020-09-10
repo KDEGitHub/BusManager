@@ -1,14 +1,13 @@
 ﻿using BusManager.Configuration;
 using BusManager.Connection;
 using BusManager.Listener;
-using BusManager.Logger;
 using BusManager.Messages;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BusManager.Model;
+using Microsoft.Extensions.Logging;
 
 namespace BusManager.Receiver
 {
@@ -16,7 +15,7 @@ namespace BusManager.Receiver
     {
         private readonly IQueueConfiguration _config;
         private readonly IBusConnection _connection;
-        private readonly IBusLogger _logger;
+        private readonly ILogger<BusReceiver> _logger;
         private IModel _channel;
         private EventingBasicConsumer _consumer;
         public bool IsOpenChanel
@@ -24,11 +23,11 @@ namespace BusManager.Receiver
             get { return (_channel != null && _channel.IsOpen && _connection.TryConnect()); }
         }
 
-        public BusReceiver(IBusConnection connection, IQueueConfiguration config, IBusLogger logger = null)
+        public BusReceiver(IBusConnection connection, IQueueConfiguration config, ILogger logger = null)
         {
             _connection = connection;
             _config = config;
-            _logger = logger;
+            _logger = (ILogger<BusReceiver>)logger;
             TryCreateChannel();
         }
 
@@ -36,7 +35,7 @@ namespace BusManager.Receiver
         {
             if (TryCreateConsumer())
             {
-                return new BusListener(_consumer, _logger);
+                return new BusListener(_consumer, _logger,_connection.ServerInfo);
             }
             return null;
         }
@@ -63,12 +62,7 @@ namespace BusManager.Receiver
             }
             catch (Exception e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusReceiver).FullName
-                });
+                _logger?.LogError(e, $"{_connection.ServerInfo}.{typeof(BusReceiver).FullName} : {e.Message}");
                 _channel = null;
             }
             return IsOpenChanel;
@@ -98,12 +92,7 @@ namespace BusManager.Receiver
             }
             catch (Exception e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusReceiver).FullName
-                });
+                _logger?.LogError(e, $"{_connection.ServerInfo}.{typeof(BusReceiver).FullName} : {e.Message}");
                 _consumer = null;
                 return false;
             }

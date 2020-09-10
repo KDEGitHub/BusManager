@@ -1,22 +1,21 @@
-﻿using System;
-using BusManager.Configuration;
+﻿using BusManager.Configuration;
 using BusManager.Connection;
-using BusManager.Logger;
 using BusManager.Queue;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BusManager.Model;
 
 namespace BusManager
 {
     public class BusManager : IBusManager
     {
         private readonly IBusConnection _connection;
-        private readonly IBusLogger _logger;
+        private readonly ILogger<BusManager> _logger;
         private readonly IBusConfiguration _config;
         private readonly List<IBusQueue> _queueList = new List<IBusQueue>();
 
-        public BusManager(IBusConnection connection, IBusConfiguration config, IBusLogger logger = null)
+        public BusManager(IBusConnection connection, IBusConfiguration config, ILogger<BusManager> logger = null)
         {
             _config = config;
             _connection = connection;
@@ -32,12 +31,7 @@ namespace BusManager
             }
             catch (Exception e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusManager).FullName
-                });
+                _logger?.LogError(e, $"{_config.LocalIP} : {_config.ApplicationName}.{typeof(BusManager).FullName} : {e.Message}");
                 return null;
             }
         }
@@ -54,12 +48,7 @@ namespace BusManager
             }
             catch (Exception e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusManager).FullName
-                });
+                _logger?.LogError(e, $"{_config.LocalIP} : {_config.ApplicationName}.{typeof(BusManager).FullName} : {e.Message}");
             }
         }
         
@@ -76,12 +65,7 @@ namespace BusManager
             }
             catch (Exception e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusManager).FullName
-                });
+                _logger?.LogError(e, $"{_config.LocalIP} : {_config.ApplicationName}.{typeof(BusManager).FullName} : {e.Message}");
             }
         }
 
@@ -104,12 +88,7 @@ namespace BusManager
             }
             catch (Exception e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusManager).FullName
-                });
+                _logger?.LogError(e, $"{_config.LocalIP} : {_config.ApplicationName}.{typeof(BusManager).FullName} : {e.Message}");
                 return false;
             }
 
@@ -127,5 +106,8 @@ namespace BusManager
                 }
             return false;
         }
+
+     
+
     }
 }

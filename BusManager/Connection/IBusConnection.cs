@@ -17,6 +17,10 @@ namespace BusManager.Connection
         /// </summary>
         bool IsConnected { get; }
         /// <summary>
+        /// Наименование сервиса плюс ip адрес 
+        /// </summary>
+        string ServerInfo { get; }
+        /// <summary>
         /// попытка соединения 
         /// </summary>
         /// <returns>результат соединения</returns>

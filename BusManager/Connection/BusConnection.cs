@@ -1,25 +1,29 @@
 ﻿using BusManager.Configuration;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System;
-using BusManager.Logger;
-using BusManager.Model;
 
 namespace BusManager.Connection
 {
     public class BusConnection : IBusConnection
     {
         private readonly IBusConfiguration _settings;
-        private readonly IBusLogger _logger;
+        private readonly ILogger<BusConnection> _logger;
         public IConnection Connection { get; private set; }
         public bool IsConnected
         {
             get { return (Connection != null && Connection.IsOpen); }
         }
 
-        public BusConnection(IBusConfiguration settings, IBusLogger logger)
+        public string ServerInfo
+        {
+            get { return $"{_settings.LocalIP} : {_settings.ApplicationName}"; }
+        }
+
+        public BusConnection(IBusConfiguration settings, ILogger logger = null)
         {
             _settings = settings;
-            _logger = logger;
+            _logger = (ILogger<BusConnection>)logger;
             TryConnect();
         }
         
@@ -49,12 +53,7 @@ namespace BusManager.Connection
             }
             catch (Exception e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusConnection).FullName
-                });
+                _logger?.LogError(e, $"{ServerInfo}.{typeof(BusConnection).FullName} : {e.Message}");
                 Connection = null;
             }
             return IsConnected;

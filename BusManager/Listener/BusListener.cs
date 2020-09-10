@@ -1,6 +1,4 @@
-﻿using BusManager.Logger;
-using BusManager.Messages;
-using BusManager.Model;
+﻿using BusManager.Messages;
 using Newtonsoft.Json;
 using RabbitMQ.Client.Events;
 using System;
@@ -8,20 +6,25 @@ using System.Collections.Concurrent;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace BusManager.Listener
 {
     public class BusListener : IBusListener
     {
-        private readonly IBusLogger _logger;
+       
+        private readonly ILogger<BusListener> _logger;
         public readonly EventingBasicConsumer _consumer;
         private readonly BlockingCollection<IBusMessage> _queueMessages = new BlockingCollection<IBusMessage>();
         private Guid _messageId;
-        
-        public BusListener(EventingBasicConsumer consumer, IBusLogger logger = null)
+        private readonly string _serverInfo;
+
+
+        public BusListener(EventingBasicConsumer consumer, ILogger logger = null, string serverInfo = "")
         {
             _consumer = consumer;
-            _logger = logger;
+            _logger = (ILogger<BusListener>)logger;
+            _serverInfo = serverInfo;
         }
         public void Subscribe(MessageReceived sb)
         {
@@ -55,12 +58,7 @@ namespace BusManager.Listener
             }
             catch (JsonException e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusListener).FullName
-                });
+                _logger?.LogError(e, $"{_serverInfo}.{typeof(BusListener).FullName} : {e.Message}");
             }
         }
 

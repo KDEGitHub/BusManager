@@ -1,10 +1,10 @@
 ﻿using BusManager.Configuration;
 using BusManager.Connection;
-using BusManager.Logger;
 using BusManager.Messages;
-using BusManager.Model;
 using RabbitMQ.Client;
 using System;
+using BusManager.Receiver;
+using Microsoft.Extensions.Logging;
 
 namespace BusManager.Producer
 {
@@ -12,18 +12,18 @@ namespace BusManager.Producer
     {
         private readonly IQueueConfiguration _config;
         private readonly IBusConnection _connection;
-        private readonly IBusLogger _logger;
+        private readonly ILogger<BusProducer> _logger;
         private IModel _channel;
-
+        
         public bool IsOpenChanel
         {
             get { return (_channel != null && _channel.IsOpen && _connection.TryConnect()); }
         }
 
-        public BusProducer(IBusConnection connection, IQueueConfiguration config, IBusLogger logger = null)
+        public BusProducer(IBusConnection connection, IQueueConfiguration config, ILogger logger = null)
         {
             _connection = connection;
-            _logger = logger;
+            _logger = (ILogger<BusProducer>)logger;
             _config = config;
             TryCreateChannel();
         }
@@ -46,12 +46,7 @@ namespace BusManager.Producer
             }
             catch (Exception e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusProducer).FullName
-                });
+                _logger?.LogError(e, $"{_connection.ServerInfo}.{typeof(BusProducer).FullName} : {e.Message}");
                 return false;
             }
         }
@@ -70,12 +65,7 @@ namespace BusManager.Producer
             }
             catch (Exception e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusProducer).FullName
-                });
+                _logger?.LogError(e, $"{_connection.ServerInfo}.{typeof(BusProducer).FullName} : {e.Message}");
                 _channel = null;
             }
             return IsOpenChanel;

@@ -4,6 +4,8 @@ namespace BusManager.Configuration
 {
     public interface IBusConfiguration
     {
+        string ApplicationName { get; set; }
+        string LocalIP { get; }
         string UserName { get; set; }
         string Password { get; set; }
         string HostName { get; set; }

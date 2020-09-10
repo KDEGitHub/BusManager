@@ -2,14 +2,13 @@
 using BusManager.Connection;
 using BusManager.Helpers;
 using BusManager.Listener;
-using BusManager.Logger;
 using BusManager.Messages;
 using BusManager.Producer;
 using BusManager.Receiver;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BusManager.Model;
 
 namespace BusManager.Queue
 {
@@ -17,7 +16,7 @@ namespace BusManager.Queue
     {
         private readonly IBusConnection _connection;
         private readonly IServiceConfiguration _config;
-        private readonly IBusLogger _logger;
+        private readonly ILogger<BusQueue> _logger;
         private IBusReceiver _receiver;
         private IBusProducer _producer;
         public string ServiceName
@@ -25,11 +24,11 @@ namespace BusManager.Queue
             get { return _config.ServiceName; }
         }
 
-        public BusQueue(IBusConnection connection, IServiceConfiguration config, IBusLogger logger= null)
+        public BusQueue(IBusConnection connection, IServiceConfiguration config, ILogger logger = null)
         {
             _connection = connection;
             _config = config;
-            _logger = logger;
+            _logger = (ILogger<BusQueue>)logger;
             TryInit();
         }
 
@@ -56,12 +55,7 @@ namespace BusManager.Queue
             }
             catch (Exception e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusQueue).FullName
-                });
+                _logger?.LogError(e, $"{_connection.ServerInfo}.{typeof(BusQueue).FullName} : {e.Message}");
                 request.IsError = true;
                 request.ErrorDetails = e.Message;
                 return request;
@@ -101,12 +95,7 @@ namespace BusManager.Queue
             }
             catch (Exception e)
             {
-                _logger?.Push(new LoggerMessage()
-                {
-                    Message = e.Message,
-                    Type = "Error",
-                    Trace = typeof(BusQueue).FullName
-                });
+                _logger?.LogError(e, $"{_connection.ServerInfo}.{typeof(BusQueue).FullName} : {e.Message}");
                 return false;
             }
         }
